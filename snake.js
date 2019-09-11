@@ -108,7 +108,7 @@ function eventHandler(event){
 }
 
 function draw(){
-    pen.fillStyle = "#000000";
+    pen.fillStyle = "blue";
     pen.fillRect(0, 0, width, height);
 
     mouse.show();
