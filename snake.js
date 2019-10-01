@@ -1,120 +1,63 @@
-var sheet = document.getElementById("canvas"); //getting the canvas from the HTML
-var pen = sheet.getContext("2d"); //getting the 2d renderer
-var width = sheet.width, height = sheet.height;
-window.addEventListener("keydown", eventHandler, false);
-
-//food that appears randomly to be eaten
-class food{
-    constructor(){
-        this.xPos = Math.floor(Math.random()*(width/20))*20; //scaling the position (x- co-ordinate) of food 
-        this.yPos = Math.floor(Math.random()*(height/20))*20; //scaling the position (y- co-ordinate) of food 
+/*
+    Author: Moinak Banerjee(moinak878)
+    Date: 1 October, 2019
+*/
+function Snake() {
+    this.x = 0;
+    this.y = 0;
+    this.xspeed = 1;
+    this.yspeed = 0;
+    this.total = 0;
+    this.tail = [];
+  
+    this.eat = function (pos) {
+      var d = dist(this.x, this.y, pos.x, pos.y);
+      if (d < 1) {
+        this.total++;
+        return true;
+      } else {
+        return false;
+      }
     }
-
-    show(){
-        pen.fillStyle = "#dc143c"
-        pen.strokeStyle = "#ffa07a"
-        pen.fillRect(this.xPos, this.yPos, 20, 20);
-        pen.strokeRect(this.xPos, this.yPos, 20, 20);
+  
+    this.dir = function (x, y) {
+      this.xspeed = x;
+      this.yspeed = y;
     }
-    
-}
-
-//snake body
-class bodyPart{
-    constructor(x, y, part){
-        this.xPos = x;
-        this.yPos = y;
-        this.type = part;
+  
+    this.death = function () {
+      for (var i = 0; i < this.tail.length; i++) {
+        var pos = this.tail[i];
+        var d = dist(this.x, this.y, pos.x, pos.y);
+        if (d < 1) {
+          console.log('starting over');
+          this.total = 0;
+          this.tail = [];
+        }
+      }
     }
-
-    show(){
-        pen.fillStyle = this.type == 0 ? "#337f22" : "#ffffff";
-        pen.strokeStyle = "#ffa07a"
-        pen.fillRect(this.xPos, this.yPos, 20, 20);
-        pen.strokeRect(this.xPos, this.yPos, 20, 20);
+  
+    this.update = function () {
+      for (var i = 0; i < this.tail.length - 1; i++) {
+        this.tail[i] = this.tail[i + 1];
+      }
+      if (this.total >= 1) {
+        this.tail[this.total - 1] = createVector(this.x, this.y);
+      }
+  
+      this.x = this.x + this.xspeed * scl;
+      this.y = this.y + this.yspeed * scl;
+  
+      this.x = constrain(this.x, 0, width - scl);
+      this.y = constrain(this.y, 0, height - scl);
     }
-}
-
-var mouse = new food();
-var body = [];
-var xSpeed = 1, ySpeed = 0;
-var animLoop = setInterval(draw, 100); // loops the draw function every 100ms
-body.push(new bodyPart(width/2, height/2, 0));
-
-//Length of snake grows on eating thatg mouse food
-function grow(){
-    var x = body[0].xPos;
-    var y = body[0].yPos;
-    body.unshift(new bodyPart(x + xSpeed*20, y + ySpeed*20, 0));
-}
-
-//what if snake eats the food
-function eats(){
-    if(body[0].xPos == mouse.xPos && body[0].yPos == mouse.yPos){
-        mouse = new food();
-        grow();
-        body[1].type = 1;
+  
+    this.show = function () {
+      fill(255);
+      for (var i = 0; i < this.tail.length; i++) {
+        rect(this.tail[i].x, this.tail[i].y, scl, scl);
+      }
+      rect(this.x, this.y, scl, scl);
+  
     }
-}
-
-//what if head of snake strikes the edge
-function edges(){
-    if(body[0].xPos < 0)
-        body[0].xPos = width - 20;
-    else if(body[0].xPos > width -20)
-        body[0].xPos = 0;
-    else if(body[0].yPos < 0)
-        body[0].yPos = height - 20;
-    else if(body[0].yPos > height -20)
-        body[0].yPos = 0;
-}
-
-function move(){
-    for(var i = body.length -1; i > 0; --i){
-        body[i].xPos = body[i -1].xPos;
-        body[i].yPos = body[i -1].yPos;
-    }
-    body[0].xPos += 20*xSpeed;
-    body[0].yPos += 20*ySpeed;
-}
-
-// Controlling the Snake
-function eventHandler(event){
-    var key = event.keyCode;
-    if((key == 65 || key == 37) && xSpeed == 0){
-        xSpeed = -1;
-        ySpeed = 0;
-    }
-    else if((key == 68 || key == 39) && xSpeed == 0){
-        xSpeed = 1;
-        ySpeed = 0;
-    }
-    else if((key == 83 || key == 40) && ySpeed == 0){
-        xSpeed = 0;
-        ySpeed = 1;
-    }
-    else if((key == 87 || key == 38) && ySpeed == 0){
-        xSpeed = 0;
-        ySpeed = -1;
-    }
-    else if(key == 32 && !pause){
-        clearInterval(animLoop);
-        pause = true;
-    }
-    else if(key == 32 && pause){
-        animLoop = setInterval(draw, 100);
-        pause = true;
-    }
-}
-
-function draw(){
-    pen.fillStyle = "#000000";
-    pen.fillRect(0, 0, width, height);
-
-    mouse.show();
-    for(var i = 0; i < body.length; ++i)
-        body[i].show();
-    move();
-    eats();
-    edges();
-}
+  }
