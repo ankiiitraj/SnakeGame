@@ -56,7 +56,6 @@ function eats(){
         body[1].type = 1;
     }
 }
-
 //what if head of snake strikes the edge
 function edges(){
     if(body[0].xPos < 0)
@@ -76,6 +75,19 @@ function move(){
     }
     body[0].xPos += 20*xSpeed;
     body[0].yPos += 20*ySpeed;
+}
+
+function die(){
+    for(var i = 0; i < body.length -1; ++i)
+    {
+        if(body[body.length -1].xPos == body[i].xPos && body[body.length -1].yPos == body[i].yPos)
+        {
+            console.log("over");
+            document.getElementById("over").innerHTML = "You Lose!";
+            clearInterval(animLoop);
+            break;
+        }
+    }
 }
 
 // Controlling the Snake
@@ -117,4 +129,5 @@ function draw(){
     move();
     eats();
     edges();
+    die();
 }
