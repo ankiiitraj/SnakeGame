@@ -47,11 +47,12 @@ function grow(){
     var y = body[0].yPos;
     body.unshift(new bodyPart(x + xSpeed*20, y + ySpeed*20, 0));
 }
-
+var score = 0;
 //what if snake eats the food
 function eats(){
     if(body[0].xPos == mouse.xPos && body[0].yPos == mouse.yPos){
         mouse = new food();
+        score++;
         grow();
         body[1].type = 1;
     }
@@ -117,4 +118,5 @@ function draw(){
     move();
     eats();
     edges();
+    document.getElementById("score").innerHTML = score;
 }
