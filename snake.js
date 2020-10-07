@@ -94,19 +94,20 @@ function die(){
 // Controlling the Snake
 function eventHandler(event){
     var key = event.keyCode;
-    if((key == 65 || key == 37) && xSpeed == 0){
+    console.log(event);
+    if((key == 65 || key == 37 || event == 'left') && xSpeed == 0){
         xSpeed = -1;
         ySpeed = 0;
     }
-    else if((key == 68 || key == 39) && xSpeed == 0){
+    else if((key == 68 || key == 39 || event == 'right') && xSpeed == 0){
         xSpeed = 1;
         ySpeed = 0;
     }
-    else if((key == 83 || key == 40) && ySpeed == 0){
+    else if((key == 83 || key == 40 || event == 'down') && ySpeed == 0){
         xSpeed = 0;
         ySpeed = 1;
     }
-    else if((key == 87 || key == 38) && ySpeed == 0){
+    else if((key == 87 || key == 38 || event == 'up') && ySpeed == 0){
         xSpeed = 0;
         ySpeed = -1;
     }
